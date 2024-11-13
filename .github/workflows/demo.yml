@@ -1,7 +1,7 @@
 name: Test Coverage
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
-  pull-requests:
+  pull-request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
 # Avoid duplicate workflows on same branch
