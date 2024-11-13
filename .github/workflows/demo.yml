@@ -26,10 +26,10 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Add comment to PR
-        run: gh pr comment ${{ github.event.pull_request.number }} --body "$PR_BODY"
+        run: gh pr comment ${{ github.event.pull_request.number }} --body "$REPORT_BODY"
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE_BODY: |
+          REPORT_BODY: |
             **Code Coverage Report**
 
             Hello, here is the code coverage report for this PR!
