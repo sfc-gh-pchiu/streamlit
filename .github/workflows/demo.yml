@@ -1,0 +1,39 @@
+name: Test Coverage
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+# Avoid duplicate workflows on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-test-coverage-report
+  cancel-in-progress: true
+
+jobs:
+  test-coverage-report:
+    if: contains(github.event.pull_request.labels.*.name, 'test-coverage-bot')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Streamlit code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 2
+      - name: Set Python version vars
+        uses: ./.github/actions/build_info
+      - name: Set up Python ${{ env.PYTHON_MAX_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "${{ env.PYTHON_MAX_VERSION }}"
+      - name: Setup virtual env
+        uses: ./.github/actions/make_init
+      - name: Add comment to PR
+        run: gh pr comment ${{ github.event.pull_request.number }} --body "$REPORT_BODY"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPORT_BODY: |
+            **Code Coverage Report**
+
+            Hello, here is the code coverage report for this PR!
